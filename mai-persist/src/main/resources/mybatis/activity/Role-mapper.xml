@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.Role">
+    <sql id="role_column_sql">
+        role.roleID,roleName,role.createTime,roleStatus,roleNote,roleNameEn
+    </sql>
+    <insert id="insert" parameterType="com.mai.user.entity.Role">
+        insert into role(
+        <include refid="role_column_sql"></include>
+        )
+        VALUES(
+        #{roleID},#{roleName},#{createTime},#{roleStatus},#{roleNote},#{roleNameEn}
+        )
+    </insert>
+
+    <select id="findRoleListByRName" parameterType="java.lang.String"
+            resultType="com.mai.user.entity.Role">
+        select
+        <include refid="role_column_sql"></include>,FROM_UNIXTIME(createTime/1000,'%Y-%m-%d %H:%i') as showCreateTime
+        from role
+            <if test="rolename != null and rolename != ''">
+                <where>
+                roleName LIKE "%"#{rolename}"%"
+                </where>
+            </if>
+        ORDER by createTime DESC
+    </select>
+    <select id="findRoleByID" parameterType="java.lang.String"
+            resultType="com.mai.user.entity.Role">
+        select
+        <include refid="role_column_sql"></include>,FROM_UNIXTIME(createTime/1000,'%Y-%m-%d %H:%i') as showCreateTime
+        from role
+        <where>
+            roleID = #{id}
+        </where>
+    </select>
+    <update id="updateRole" parameterType="com.mai.user.entity.Role">
+        update role
+        <set>
+            roleName = #{roleName},
+            createTime = #{createTime},
+            roleStatus = #{roleStatus},
+            roleNote = #{roleNote},
+            roleNameEn = #{roleNameEn}
+        </set>
+        <where>
+            roleID = #{roleID}
+        </where>
+    </update>
+
+    <select id="findRoleByUserID" parameterType="java.lang.String"
+            resultType="com.mai.user.entity.Role">
+        select
+        <include refid="role_column_sql"></include>,FROM_UNIXTIME(createTime/1000,'%Y-%m-%d %H:%i') as showCreateTime
+        from role,user_role_ref
+        <where>
+            role.roleID = user_role_ref.roleID and
+            userID = #{uid}
+        </where>
+    </select>
+
+    <select id="findRoleByPhoneNum" parameterType="java.lang.String"
+            resultType="com.mai.user.entity.Role">
+        select
+        <include refid="role_column_sql"></include>,FROM_UNIXTIME(role.createTime/1000,'%Y-%m-%d %H:%i') as showCreateTime
+        from role,user_role_ref,user
+        <where>
+            role.roleID = user_role_ref.roleID and user_role_ref.userID = user.userID and
+            phoneNum = #{phoneNum}
+        </where>
+    </select>
+
+</mapper>

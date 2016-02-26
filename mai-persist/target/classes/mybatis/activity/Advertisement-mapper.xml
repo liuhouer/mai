@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.Advertisement">
+    <sql id="advertisement_column_sql">
+       advertisementID,title,startTime,endTime,imageURL,toURL,isEnable
+    </sql>
+    <insert id="insert" parameterType="com.mai.app.entity.Advertisement">
+        insert into advertisement(
+        <include refid="advertisement_column_sql"></include>
+        )
+        VALUES(
+        
+		#{advertisementID},	#{title},	#{startTime},	#{endTime},	#{imageURL},	#{toURL},	#{isEnable}
+		
+        )
+    </insert>
+    
+
+    <select id="findAllByPage"  
+            resultType="com.mai.app.entity.Advertisement">
+        select *,FROM_UNIXTIME(startTime/1000,'%Y-%m-%d %H:%i') as showStartTime,FROM_UNIXTIME(endTime/1000,'%Y-%m-%d %H:%i') as showEndTime  from advertisement where isEnable = 1 order by startTime desc
+    </select>
+    
+    <select id="getMaxLevel"  
+            resultType="com.mai.app.entity.Advertisement">
+        select max(level) as max from advertisement 
+    </select>
+    
+     <select id="findByID"  parameterType="string"
+            resultType="com.mai.app.entity.Advertisement">
+        select * from advertisement where advertisementID = #{id}
+    </select>
+    
+     <update id="updateByID"  parameterType="hashmap">
+     	update  advertisement set isEnable = 0 where advertisementID = #{id} 
+    </update>
+    
+    <update id="updateModel" parameterType="com.mai.app.entity.Advertisement">
+        update advertisement
+        <set>
+            title = #{title},
+            startTime = #{startTime},
+            endTime = #{endTime},
+            imageURL = #{imageURL},
+            toURL = #{toURL},
+            isEnable = #{isEnable}
+        </set>
+        <where>
+            advertisementID = #{advertisementID}
+        </where>
+    </update>
+    
+</mapper>

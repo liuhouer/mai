@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.CardStarPhoto">
+    <sql id="cardstarphoto_column_sql">
+      cardStarPhotoID,cardStarName,photoURL,color,audioURL,width,height,dx,dy,ratio,createTime,personID,orderNum,isDelete
+    </sql>
+    <insert id="insert" parameterType="com.mai.card.entity.CardStarPhoto">
+        insert into cardstarphoto(
+        <include refid="cardstarphoto_column_sql"></include>
+        )
+        VALUES(
+        #{cardStarPhotoID},	#{cardStarName},	#{photoURL},	#{color},	#{audioURL},
+        	#{width},	#{height},	#{dx},	#{dy},
+        	#{ratio},	#{createTime},	#{personID},	#{orderNum},	#{isDelete}
+        )
+    </insert>
+
+    <select id="findByPage" parameterType="com.mai.card.entity.CardStarPhoto"
+            resultType="com.mai.card.entity.CardStarPhoto">
+        select *,FROM_UNIXTIME(createTime/1000,'%Y-%m-%d %H:%i') as showTime from cardstarphoto
+        
+         <where>
+            ${_parameter}
+        </where>
+
+        order by createTime desc
+    </select>
+    
+      <select id="findByID" parameterType="string"
+            resultType="com.mai.card.entity.CardStarPhoto">
+        select * from cardstarphoto where  cardStarPhotoID = #{id}
+        
+        
+    </select>
+    
+    
+    
+    <update id="updateModel" parameterType="com.mai.card.entity.CardStarPhoto">
+        update cardstarphoto
+        <set>
+                
+	            
+	   	 cardStarName = #{cardStarName},
+	   	 
+	            
+	   	 photoURL = #{photoURL},
+	   	 
+	            
+	   	 color = #{color},
+	   	 
+	            
+	   	 audioURL = #{audioURL},
+	   	 
+	            
+	   	 width = #{width},
+	   	 
+	            
+	   	 height = #{height},
+	   	 
+	            
+	   	 dx = #{dx},
+	   	 
+	            
+	   	 dy = #{dy},
+	   	 
+	            
+	   	 ratio = #{ratio},
+	   	 
+	            
+	   	 createTime = #{createTime},
+	   	 
+	            
+	   	 personID = #{personID},
+	   	 
+	            
+	   	 orderNum = #{orderNum},
+	   	 
+	            
+	   	 isDelete = #{isDelete},
+	   	 
+	   	 isForbidden = #{isForbidden}
+	   	 
+	            </set>
+        <where>
+         cardStarPhotoID = #{cardStarPhotoID}
+        </where>
+    </update>
+    
+    
+    
+</mapper>

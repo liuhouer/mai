@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.Activitymember">
+      <sql id="activitymember_column_sql">
+            activitymemberID,activityID ,activitymember.personID,activitymember.createTime,memberStatus,name,gender,applayNote,
+            schoolID,schoolName,phoneNum,headerURL,FROM_UNIXTIME(activitymember.createTime/1000,'%Y-%m-%d %H:%i:%s') as showCreateTime
+      </sql>
+      <update id="updateActivitymemberStatus" parameterType="java.util.Map">
+            update activitymember
+            <set>memberStatus = #{status}</set>
+            <where>
+                  activitymemberID = #{id}
+            </where>
+      </update>
+
+      <select id="findActivitymemberByID" parameterType="java.lang.String"
+              resultType="com.mai.activity.entity.ActivityMember">
+            select * from activitymember
+            <where>
+                  activitymemberID = #{id}
+            </where>
+      </select>
+
+      <select id="findActivitymemberList" parameterType="java.util.Map"
+              resultType="com.mai.activity.entity.ActivityMember">
+            select
+            <include refid="activitymember_column_sql"></include>
+            from activitymember,person
+            <where>
+                  activitymember.personID = person.personID and activityID = #{activityID}
+                  <if test="schoolID!=null and schoolID!='' ">
+                      and schoolID = #{schoolID}
+                  </if>
+                  <if test="gender!=null and gender!='' ">
+                        and gender = #{gender}
+                  </if>
+                  <if test="memberStatus!=null and memberStatus!='' ">
+                        and memberStatus = #{memberStatus}
+                  </if>
+            </where>
+            ORDER by activitymember.createTime DESC
+      </select>
+
+      <select id="findActivitymemberCountByStatus" parameterType="java.util.Map"
+              resultType="java.lang.Integer">
+            select count(1) from activitymember
+            <where>
+                  activityID = #{activityID}
+                  <if test="memberStatus != null and memberStatus !=''">
+                        and memberStatus = #{memberStatus}
+                  </if>
+            </where>
+      </select>
+
+      <update id="updateActMemberVALIDNOTbyActID" parameterType="java.util.Map">
+            update activitymember
+            <set>memberStatus = #{status}</set>
+            <where>
+                  activityID = #{activityID} and memberStatus = 0
+            </where>
+      </update>
+
+      <select id="getActivitymemberNum" parameterType="com.mai.activity.entity.ActivityMember" resultType="int">
+            select count(1) num from activityMember where activityID=#{activityID} and memberStatus=#{memberStatus}
+      </select>
+</mapper>

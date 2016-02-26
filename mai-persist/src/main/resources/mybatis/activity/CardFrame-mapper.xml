@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.cardstarphoto">
+    <sql id="cardframe_column_sql">
+     cardFrameID,photoURL,width,height,createTime,personID,isDelete
+    </sql>
+    <insert id="insert" parameterType="com.mai.card.entity.CardStarPhoto">
+        insert into cardframe(
+        <include refid="cardframe_column_sql"></include>
+        )
+        VALUES(
+        #{cardFrameID},	#{photoURL},	#{width},	#{height},	#{createTime},
+        #{personID},	#{isDelete}
+        )
+    </insert>
+
+    <update id="updateModel" parameterType="com.mai.card.entity.CardFrame">
+        update cardframe
+        <set>
+                
+	   	 
+	   	 cardFrameID = #{cardFrameID},
+	   	 
+	            
+	   	 photoURL = #{photoURL},
+	   	 
+	            
+	   	 width = #{width},
+	   	 
+	            
+	   	 height = #{height},
+	   	 
+	            
+	   	 createTime = #{createTime},
+	   	 
+	            
+	   	 personID = #{personID},
+	   	 
+	            
+	   	 isDelete = #{isDelete}
+	   	 
+	            </set>
+        <where>
+         cardframeID = #{cardframeID}
+        </where>
+    </update>
+    
+    
+    
+    <select id="findAllByPage"  
+            resultType="com.mai.card.entity.CardFrame">
+        select * from cardframe
+    </select>
+    
+    <select id="findByID"  parameterType="string"
+            resultType="com.mai.card.entity.CardFrame">
+        select * from cardframe where cardframeID = #{id}
+    </select>
+    
+    
+    
+</mapper>

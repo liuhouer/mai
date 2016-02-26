@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.Societycategory">
+    <sql id="Societycategory_column_sql">
+        categoryID,categoryName,categoryOrderNum,imageURL
+    </sql>
+    <select id="findSocietyCategoryList" resultType="com.mai.society.entity.SocietyCategory">
+        select * from societycategory ORDER BY categoryOrderNum
+    </select>
+
+    <select id="findSocietyCategoryInfoList" resultType="com.mai.society.entity.SocietyCategory">
+        select societycategory.categoryID,societycategory.categoryName,categoryOrderNum,count(society.societyCategoryID) as categoryCount,imageURL
+          from societycategory LEFT JOIN society ON society.societyCategoryID = societycategory.categoryID GROUP BY societycategory.categoryID ORDER BY categoryOrderNum
+    </select>
+
+    <update id="updateSocietyCategory" parameterType="com.mai.society.entity.SocietyCategory">
+        update societycategory
+        <set>
+            <if test="categoryName != null and categoryName != ''">
+                categoryName = #{categoryName},
+            </if>
+            <if test="categoryOrderNum != null and categoryOrderNum != ''">
+                categoryOrderNum = #{categoryOrderNum},
+            </if>
+            <if test="imageURL != null and imageURL != ''">
+                imageURL = #{imageURL}
+            </if>
+        </set>
+        <where>
+            categoryID = #{categoryID}
+        </where>
+    </update>
+
+    <select id="findSocietyCategoryByID" resultType="com.mai.society.entity.SocietyCategory"
+            parameterType="java.lang.String">
+          select societycategory.categoryID,societycategory.categoryName,categoryOrderNum,count(society.societyCategoryID) as categoryCount,imageURL
+          from societycategory LEFT JOIN society ON society.societyCategoryID = societycategory.categoryID where societycategory.categoryID = #{categoryID} GROUP BY societycategory.categoryID
+    </select>
+
+    <delete id="deleteSocietyCategoryByCID" parameterType="java.lang.String">
+        delete from societycategory where categoryID = #{cid}
+    </delete>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into societycategory ( <include refid="Societycategory_column_sql" /> )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.categoryID},#{item.categoryName},#{item.categoryOrderNum},#{item.imageURL})
+        </foreach>
+    </insert>
+</mapper>

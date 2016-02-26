@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.Permisson">
+    <sql id="permisson_column_sql">
+        permissionID,actionName ,actionURL,editTime,roleID,Note,orderNum
+    </sql>
+    <insert id="insert" parameterType="com.mai.user.entity.Permission">
+        insert into permission(
+        <include refid="permisson_column_sql"></include>
+        )
+        VALUES(
+        #{permissionID},#{actionName},#{actionURL},#{editTime},#{roleID},#{Note},#{orderNum}
+        )
+    </insert>
+
+    <select id="findPermissonListByRID" parameterType="java.lang.String"
+            resultType="com.mai.user.entity.Permission">
+        select
+        <include refid="permisson_column_sql"></include>,FROM_UNIXTIME(editTime/1000,'%Y-%m-%d %H:%i') as showEditTime
+        from permission
+        <where>
+            roleID = #{roleID}
+        </where>
+        ORDER by orderNum
+    </select>
+    <select id="findPermissonByID" parameterType="java.lang.String"
+            resultType="com.mai.user.entity.Permission">
+        select
+        <include refid="permisson_column_sql"></include>,FROM_UNIXTIME(editTime/1000,'%Y-%m-%d %H:%i') as showEditTime
+        from permission
+        <where>
+            permissionID = #{id}
+        </where>
+    </select>
+    <update id="updatePermission" parameterType="com.mai.user.entity.Permission">
+        update permission
+        <set>
+            actionName = #{actionName},
+            actionURL = #{actionURL},
+            editTime = #{editTime},
+            roleID = #{roleID},
+            Note = #{Note},
+            orderNum = #{orderNum}
+        </set>
+        <where>
+            permissionID = #{permissionID}
+        </where>
+    </update>
+</mapper>

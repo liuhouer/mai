@@ -1,0 +1,84 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.mai</groupId>
+    <artifactId>mai-application</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>mai-service</module>
+        <module>mai-web</module>
+        <module>mai-api</module>
+        <module>mai-model</module>
+        <module>mai-persist</module>
+    </modules>
+    <packaging>pom</packaging>
+
+    <name>mai-application</name>
+    <url>http://maven.apache.org</url>
+
+
+
+    <repositories>
+        <repository>
+            <id>mai-releases</id>
+            <url>http://182.92.165.40:8081/nexus/content/repositories/mai-releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>mai-snapshots</id>
+            <url>http://182.92.165.40:8081/nexus/content/repositories/mai-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>mvn</id>
+            <url>http://mvnrepository.com/artifact</url>
+        </repository>
+        <repository>
+            <id>maven.nuxeo.org</id>
+            <url>http://maven.nuxeo.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>mai-thirdparty</id>
+            <url>http://182.92.165.40:8081/nexus/content/repositories/thirdparty/</url>
+        </repository>
+    </repositories>
+
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>mai-snapshots</id>
+            <url>http://182.92.165.40:8081/nexus/content/repositories/mai-snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>mai-releases</id>
+            <url>http://182.92.165.40:8081/nexus/content/repositories/mai-releases/</url>
+        </repository>
+    </distributionManagement>
+
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

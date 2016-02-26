@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.Society">
+
+    <sql id="society_column_sql">
+       societyID,societyName,schoolID,schoolName,societyCategoryID,
+       societyCategoryName,memberNum,buildDate,createTime,praiseNum,
+       slogan,gpsLatitude,gpsLongitude,locationDetail,phoneNum,coverURL,
+       adminID,adminName,status,societyNote,applyNote,joinPersonNum,
+       locationID,level,societyLOGO,isLog,followNum,recommendNo,geohash,shareURL,shareDESC
+    </sql>
+    <insert id="insert" parameterType="com.mai.society.entity.Society">
+        insert into society(
+        <include refid="society_column_sql"></include>
+        )
+        VALUES(
+        #{societyID},	#{societyName},	#{schoolID},	#{schoolName},	#{societyCategoryID},
+        	#{societyCategoryName},	#{memberNum},	#{buildDate},	#{createTime},
+        		#{praiseNum},	#{slogan},	#{gpsLatitude},	#{gpsLongitude},	
+        		#{locationDetail},	#{phoneNum},	#{coverURL},	#{adminID},	
+        		#{adminName},	#{status},	#{societyNote},	#{applyNote},	#{joinPersonNum},
+        	#{locationID},	#{level},	#{societyLOGO},	#{isLog},	#{followNum},	#{recommendNo},
+            #{geohash},#{shareURL},#{shareDESC}
+        )
+    </insert>
+
+    <select id="getSocietyListByZT" parameterType="java.lang.String"
+            resultType="com.mai.society.entity.Society">
+        select s.*,FROM_UNIXTIME(s.createTime/1000,'%Y-%m-%d %H:%i') as showTime from society s 
+        <where>
+            ${_parameter}
+        </where>
+        order by createTime DESC
+    </select>
+    
+    <select id="getSocietyListByZTOver0"  
+            resultType="com.mai.society.entity.Society">
+        select s.* from society s where s.status > 0 order by createTime DESC
+    </select>
+    
+     <select id="getSocietyByID" parameterType="java.lang.String"
+            resultType="com.mai.society.entity.Society">
+        select s.* from society s where s.societyID = #{societyID}
+    </select>
+    
+    
+      <!--更新活动状态 -->
+  	<update id="updateSocietyStatusByID"  parameterType="Map">
+         update society
+        <set>
+            status = #{status},
+            <if test="status != 1 and status != 2">
+                isLog = 1
+            </if>
+        </set>
+         <where>
+             societyID = #{id}
+         </where>
+    </update>
+
+     <!-- 更新社团信息-->
+    <update id="updateSociety" parameterType="com.mai.society.entity.Society">
+        update society
+        <set>
+            societyName = #{societyName},
+            schoolID = #{schoolID},
+            schoolName = #{schoolName},
+            societyCategoryID = #{societyCategoryID},
+            societyCategoryName = #{societyCategoryName},
+            memberNum = #{memberNum},
+            buildDate = #{buildDate},
+            phoneNum = #{phoneNum},
+            praiseNum = #{praiseNum},
+            slogan = #{slogan},
+            gpsLatitude = #{gpsLatitude},
+            gpsLongitude = #{gpsLongitude},
+            locationDetail = #{locationDetail},
+            coverURL = #{coverURL},
+            adminID = #{adminID},
+            adminName = #{adminName},
+            status = #{status},
+            societyNote = #{societyNote},
+            applyNote = #{applyNote},
+            joinPersonNum = #{joinPersonNum},
+            societyLOGO = #{societyLOGO},
+            isLog = #{isLog},
+            followNum = #{followNum},
+            locationID = #{locationID},
+            level = #{level},
+            recommendNo = #{recommendNo},
+            geohash = #{geohash},
+            shareURL = #{shareURL},
+            shareDESC = #{shareDESC}
+        </set>
+        <where>
+            societyID = #{societyID}
+        </where>
+    </update>
+    <update id="updateSocietyJoinPersonNum" parameterType="com.mai.society.entity.Society">
+        update society set joinPersonNum=#{joinPersonNum} where societyID=#{societyID}
+    </update>
+
+
+    <select id="findSocietyByAdminID" parameterType="java.lang.String"
+            resultType="com.mai.society.entity.Society">
+        select * from society where adminID = #{adminID}
+    </select>
+    
+     <select id="findSocietyByAdminIDAndSt" parameterType="java.lang.String"
+            resultType="com.mai.society.entity.Society">
+        select * from society where adminID = #{adminID} and status > 0
+    </select>
+
+    <update id="updatePresident" parameterType="com.mai.society.entity.Society">
+        update society
+        <set>
+            schoolID = #{schoolID},
+            schoolName = #{schoolName},
+            adminID = #{adminID},
+            adminName = #{adminName}
+        </set>
+        <where>
+            societyID = #{societyID}
+        </where>
+    </update>
+
+    <select id="findSocietyRunningByPage" parameterType="java.lang.String"
+            resultType="com.mai.vo.SocietyRunningVO">
+        select * from society LEFT JOIN systemsocietyfollow ON society.societyID = systemsocietyfollow.societyID
+              LEFT JOIN systemsocietypraise ON society.societyID = systemsocietypraise.societyID
+        <where>
+            ${_parameter}
+        </where>
+         order by society.createTime DESC
+    </select>
+
+    <!--更新推荐位 -->
+    <update id="updateRecommendNoByID"  parameterType="Map">
+        update society
+        <set>
+            recommendNo = #{recommendNo}
+        </set>
+        <where>
+            societyID = #{societyID}
+        </where>
+    </update>
+
+    <update id="updateSocietyCategoryNameBySCID"  parameterType="Map">
+        update society
+        <set>
+            societyCategoryName = #{societyCategoryName}
+        </set>
+        <where>
+            societyCategoryID = #{societyCategoryID}
+        </where>
+    </update>
+
+    <select id="findSocietyCategoryDetailByPage" parameterType="java.lang.String"
+            resultType="com.mai.society.entity.Society">
+        select * from society
+        <where>
+            ${_parameter}
+        </where>
+        order by society.createTime DESC
+    </select>
+
+    <select id="findSocietyTagDetailByPage" parameterType="java.lang.String"
+            resultType="com.mai.society.entity.Society">
+        select society.buildDate,society.status,societyName from society LEFT JOIN societytagref ON society.societyID = societytagref.societyID
+        <where>
+            ${_parameter}
+        </where>
+        order by society.createTime DESC
+    </select>
+    
+      <update id="mdSocietyNameByID"  parameterType="Map">
+        update society
+        <set>
+            societyName = #{name}
+        </set>
+        <where>
+            societyID = #{id}
+        </where>
+    </update>
+    
+</mapper>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.PersonCard">
+    <select id="findAllByPage"
+            resultType="com.mai.card.entity.PersonCard">
+        select * from personcard
+    </select>
+    
+    <select id="findByID"  parameterType="string"
+            resultType="com.mai.card.entity.PersonCard">
+        select * from personcard where personCardID = #{id}
+    </select>
+
+
+    <update id="transIncreaseViewNum" parameterType="com.mai.card.entity.PersonCard">
+        update personCard
+        <set>
+            viewNum=IFNULL(viewNum,0)+1
+        </set>
+        <where>
+            personCardID = #{personCardID}
+        </where>
+    </update>
+
+    <update id="transIncreaseShareNum" parameterType="com.mai.card.entity.PersonCard">
+        update personCard
+        <set>
+            <if test="wxShareNum!=null">wxShareNum=IFNULL(wxShareNum,0)+1,</if>
+            <if test="circleShareNum!=null">circleShareNum=IFNULL(circleShareNum,0)+1,</if>
+            <if test="qqShareNum!=null">qqShareNum=IFNULL(qqShareNum,0)+1,</if>
+            <if test="sinaShareNum!=null">sinaShareNum=IFNULL(sinaShareNum,0)+1,</if>
+            <if test="shareInWxNum!=null">shareInWxNum=IFNULL(shareInWxNum,0)+1,</if>
+            <if test="shareInCircleNum!=null">shareInCircleNum=IFNULL(shareInCircleNum,0)+1,</if>
+        </set>
+        <where>
+            personCardID = #{personCardID}
+        </where>
+    </update>
+    <select id="getScoreByPhoneNum"  parameterType="string"
+            resultType="com.mai.card.entity.PersonCard">
+        select  phoneNum,personName,
+                sum(wxShareNum+circleShareNum+shareInWxNum+shareInCircleNum) as shareTotal
+          from personcard where phoneNum = #{phoneNum} group by phoneNum
+    </select>
+
+    <update id="transIncreaseLotteryNum" parameterType="com.mai.card.entity.PersonCard">
+        update personCard
+        <set>
+            lotteryNum=IFNULL(lotteryNum,0)+1
+        </set>
+        <where>
+            personCardID = #{personCardID}
+        </where>
+    </update>
+
+    <select id="getScoreByPersonID"  parameterType="string"
+            resultType="com.mai.card.entity.PersonCard">
+        select  phoneNum,personName,
+        sum(wxShareNum+circleShareNum+shareInWxNum+shareInCircleNum) as shareTotal
+        from personcard where personID = #{personID} group by phoneNum
+    </select>
+</mapper>

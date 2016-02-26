@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    <context:property-placeholder location="classpath:*.properties"/>
+
+    <!-- 配置redis池，依次为最大实例数，最大空闲实例数，(创建实例时)最大等待时间，(创建实例时)是否验证 -->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxTotal" value="${redis.pool.maxTotal}"/>
+        <property name="maxIdle" value="${redis.pool.maxIdle}"/>
+        <property name="maxWaitMillis" value="${redis.pool.maxWaitMillis}"/>
+        <property name="testOnBorrow" value="${redis.pool.testOnBorrow}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${redis.pool.timeBetweenEvictionRunsMillis}" />
+        <property name="minEvictableIdleTimeMillis" value="${redis.pool.minEvictableIdleTimeMillis}" />
+    </bean>
+
+
+    <bean id="shardedJedisPool" class="redis.clients.jedis.ShardedJedisPool">
+        <constructor-arg index="0" ref="jedisPoolConfig"/>
+        <constructor-arg index="1">
+            <list>
+                <bean class="com.mai.jedis.MyJedisShardInfo">
+                    <constructor-arg index="0" value="${redis1.host}"/>
+                    <constructor-arg index="1" value="${redis1.port}" type="int"/>
+                    <constructor-arg index="2" value="${redis1.pass}"/>
+                </bean>
+                <bean class="com.mai.jedis.MyJedisShardInfo">
+                    <constructor-arg index="0" value="${redis2.host}"/>
+                    <constructor-arg index="1" value="${redis2.port}" type="int"/>
+                    <constructor-arg index="2" value="${redis2.pass}"/>
+                </bean>
+                <bean class="com.mai.jedis.MyJedisShardInfo">
+                    <constructor-arg index="0" value="${redis3.host}"/>
+                    <constructor-arg index="1" value="${redis3.port}" type="int"/>
+                    <constructor-arg index="2" value="${redis3.pass}"/>
+                </bean>
+            </list>
+        </constructor-arg>
+        <!-- 默认采用redis.clients.util.MurmurHash 一种基于md5的一致性hash策略-->
+    </bean>
+
+    <bean id="shardedRedisClient" class="com.mai.redis.impl.ShardedRedisClient">
+        <property name="shardedJedisPool" ref="shardedJedisPool"/>
+    </bean>
+
+</beans>
+

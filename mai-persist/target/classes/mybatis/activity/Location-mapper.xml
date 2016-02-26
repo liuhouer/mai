@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.Location">
+       <sql id="location_column_sql">
+              locationID,locationName ,parentLocationID,orderNum
+       </sql>
+
+
+       <select id="findLocationList" resultType="com.mai.activity.entity.Location">
+              select * from location ORDER BY orderNum
+       </select>
+</mapper>

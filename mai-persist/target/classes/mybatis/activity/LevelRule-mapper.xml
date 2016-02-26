@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.LevelRule">
+    <sql id="levelrule_column_sql">
+       ruleID,level,praiseNum,followNum,createTime
+    </sql>
+    <insert id="insert" parameterType="com.mai.activity.entity.LevelRule">
+        insert into levelrule(
+        <include refid="levelrule_column_sql"></include>
+        )
+        VALUES(
+        
+		#{ruleID},	#{level},	#{praiseNum},	#{followNum},	#{createTime}
+		
+        )
+    </insert>
+    
+
+    <select id="findAllByPage"  
+            resultType="com.mai.activity.entity.LevelRule">
+        select * from levelrule order by level asc
+    </select>
+    
+    <select id="getMaxLevel"  
+            resultType="com.mai.activity.entity.LevelRule">
+        select max(level) as max from levelrule 
+    </select>
+    
+     <select id="findByID"  parameterType="string"
+            resultType="com.mai.activity.entity.LevelRule">
+        select * from levelrule where ruleID = #{ruleid}
+    </select>
+    
+     <update id="updateByID"  parameterType="hashmap">
+     	update  levelrule set praiseNum = #{praiseNum} , followNum = #{followNum} where ruleID = #{id} 
+    </update>
+    
+</mapper>

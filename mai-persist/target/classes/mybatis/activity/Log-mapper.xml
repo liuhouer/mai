@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.Log">
+    <sql id="log_column_sql">
+        logID,logDesc ,createTime,logAuthor,logtype,actID
+    </sql>
+    <insert id="insert" parameterType="com.mai.activity.entity.Log">
+        insert into log(
+        <include refid="log_column_sql"></include>
+        )
+        VALUES(
+        #{logID},#{logDesc },#{createTime},#{logAuthor},#{logtype},#{actID}
+        )
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into log ( <include refid="log_column_sql" /> )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.logID},#{item.logDesc},#{item.createTime},#{item.logAuthor},#{item.logtype},#{item.actID})
+        </foreach>
+    </insert>
+    
+    <select id="findLogByPage" parameterType="com.mai.activity.entity.Log"
+            resultType="com.mai.activity.entity.Log">
+        select * from log
+    </select>
+    
+    <select id="getLogList" parameterType="Map"
+            resultType="com.mai.activity.entity.Log">
+        select *,FROM_UNIXTIME(createTime/1000,'%Y-%m-%d %H:%i') as showCreateTime from log
+        where actID = #{actid} and logtype = #{logtype} ORDER by createTime DESC
+    </select>
+
+</mapper>

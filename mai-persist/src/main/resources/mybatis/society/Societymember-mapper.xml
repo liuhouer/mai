@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.Societymember">
+    <sql id="societymember_column_sql">
+        societyMemberID,societyID ,societymember.personID,societymember.createTime,memberStatus,name,gender,applayNote,
+        schoolID,schoolName,phoneNum,headerURL,FROM_UNIXTIME(societymember.createTime/1000,'%Y-%m-%d %H:%i:%s') as showCreateTime
+    </sql>
+    <sql id="societymember_insert_column_sql">
+        societyMemberID,societyID ,personID,createTime,memberStatus,applayNote
+    </sql>
+
+    <update id="updateSocietymemberStatus" parameterType="java.util.Map">
+        update societymember
+        <set>memberStatus = #{status}</set>
+        <where>
+            societyMemberID = #{id}
+        </where>
+    </update>
+
+    <select id="findSocietymemberByID" parameterType="java.lang.String"
+            resultType="com.mai.society.entity.SocietyMember">
+        select * from societymember
+        <where>
+            societyMemberID = #{id}
+        </where>
+    </select>
+
+    <select id="findSocietymemberList" parameterType="java.util.Map"
+            resultType="com.mai.society.entity.SocietyMember">
+        select
+        <include refid="societymember_column_sql"></include>
+        from societymember,person
+        <where>
+            societymember.personID = person.personID and societyID = #{societyID}
+            <if test="schoolID!=null and schoolID!='' ">
+                and schoolID = #{schoolID}
+            </if>
+            <if test="gender!=null and gender!='' ">
+                and gender = #{gender}
+            </if>
+            <if test="memberStatus!=null and memberStatus!='' ">
+                and memberStatus = #{memberStatus}
+            </if>
+        </where>
+        ORDER by societymember.createTime DESC
+    </select>
+
+    <select id="findSocietymemberBySidANDPid" parameterType="java.util.Map"
+            resultType="com.mai.society.entity.SocietyMember">
+        select * from societymember
+        <where>
+            societyID = #{societyID} AND personID = #{personID}
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.mai.society.entity.SocietyMember">
+        insert into societymember(
+        <include refid="societymember_insert_column_sql"></include>
+        )
+        VALUES(
+        #{societyMemberID},#{societyID},#{personID},#{createTime},#{memberStatus},#{applayNote}
+        )
+    </insert>
+
+    <select id="getSocietymemberNum" parameterType="com.mai.society.entity.SocietyMember" resultType="int">
+        select count(1) num from societyMember where societyID=#{societyID} and memberStatus=#{memberStatus}
+    </select>
+</mapper>

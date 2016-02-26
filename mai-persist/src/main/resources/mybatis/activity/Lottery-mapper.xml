@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.Lottery">
+    <sql id="lottery_column_sql">
+        lotteryID,phoneNum ,winner,level,createTime ,
+        winnerTime,orderNum ,objID ,lotteryStatus,personID,lotteryNum
+    </sql>
+    <insert id="insertOrUpdateLotteryNum" parameterType="com.mai.lottery.Lottery">
+        INSERT INTO lottery (
+        <include refid="lottery_column_sql"></include>
+        )
+        VALUES(
+        #{lotteryID},#{phoneNum },#{winner},#{level},#{createTime },#{winnerTime},#{orderNum },
+        #{objID },#{lotteryStatus},#{personID},#{lotteryNum}
+        )
+        ON DUPLICATE KEY UPDATE lotteryNum=IFNULL(lotteryNum,0)+#{lotteryNum},winnerTime=#{winnerTime}
+    </insert>
+
+    <select id="getLotteryList" resultType="com.mai.lottery.Lottery">
+        select <include refid="lottery_column_sql"></include>,
+        FROM_UNIXTIME(createTime/1000,'%Y-%m-%d %H:%i') as showCreateTime,
+        FROM_UNIXTIME(winnerTime/1000,'%Y-%m-%d %H:%i') as showWinnerTime
+        from lottery where lotteryStatus > 0
+        ORDER by winnerTime DESC
+    </select>
+
+    <select id="findLotteryByPhoneAndObjID" parameterType="com.mai.lottery.Lottery"
+            resultType="com.mai.lottery.Lottery">
+        select <include refid="lottery_column_sql"></include>,
+        FROM_UNIXTIME(createTime/1000,'%Y-%m-%d %H:%i') as showCreateTime,
+        FROM_UNIXTIME(winnerTime/1000,'%Y-%m-%d %H:%i') as showWinnerTime
+        from lottery
+        where phoneNum =#{phoneNum} and objID =#{objID}
+    </select>
+
+    <update id="transIncreaseLotteryNum" parameterType="com.mai.lottery.Lottery">
+        update lottery
+        <set>
+            lotteryNum=IFULL(lotteryNum,0)+1
+        </set>
+        <where>
+            phoneNum =#{phoneNum} and objID =#{objID}
+        </where>
+    </update>
+
+    <update id="updateLotteryStatus" parameterType="com.mai.lottery.Lottery">
+        update lottery
+        <set>
+            lotteryStatus=#{lotteryStatus}
+        </set>
+        <where>
+            phoneNum =#{phoneNum} and objID =#{objID}
+        </where>
+    </update>
+</mapper>

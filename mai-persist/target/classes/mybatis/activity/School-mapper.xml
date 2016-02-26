@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.School">
+    <sql id="school_column_sql">
+        schoolID,schoolName,schoolOrderNum
+    </sql>
+    <insert id="insert" parameterType="com.mai.activity.entity.Activity">
+        insert into school_column_sql(
+        <include refid="school_column_sql"></include>
+        )
+        VALUES(
+        #{schoolID},#{schoolName },#{schoolOrderNum}
+        )
+    </insert>
+
+    <select id="getSchoolList" parameterType="com.mai.activity.entity.School"
+            resultType="com.mai.activity.entity.School">
+        select * from school
+        <where>
+            <if test="schoolName != null and schoolName != ''">
+                schoolName = #{schoolName}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.Tag">
+    <sql id="tag_column_sql">
+        tagID,tagName ,orderNum
+    </sql>
+    <insert id="insert" parameterType="com.mai.activity.entity.Tag">
+        insert into tag(
+        <include refid="tag_column_sql"></include>
+        )
+        VALUES(
+        #{tagID},#{tagName },#{orderNum}
+        )
+    </insert>
+
+    <select id="findTagByPage" parameterType="com.mai.activity.entity.Tag"
+            resultType="com.mai.activity.entity.Tag">
+        select * from tag
+    </select>
+
+    <select id="findTagList" resultType="com.mai.activity.entity.Tag">
+        select * from tag ORDER BY orderNum
+    </select>
+
+
+
+
+    <select id="findTagInfoList" resultType="com.mai.activity.entity.Tag">
+        select tag.tagID,tagName,orderNum,count(tag_activity_ref.tagID) as tagCount
+        from tag LEFT JOIN tag_activity_ref ON tag.tagID = tag_activity_ref.tagID GROUP BY tag.tagID ORDER BY orderNum
+    </select>
+
+    <update id="updateTag" parameterType="com.mai.activity.entity.Tag">
+        update tag
+        <set>
+            tagName = #{tagName},
+            <if test="orderNum != null and orderNum != ''">
+                orderNum = #{orderNum}
+            </if>
+        </set>
+        <where>
+            tagID = #{tagID}
+        </where>
+    </update>
+
+    <select id="findTagByID" resultType="com.mai.activity.entity.Tag"
+            parameterType="java.lang.String">
+        select tag.tagID,tagName,orderNum,count(tag_activity_ref.tagID) as tagCount
+        from tag LEFT JOIN tag_activity_ref ON tag.tagID = tag_activity_ref.tagID where tag.tagID = #{tagID} GROUP BY tag.tagID
+    </select>
+
+    <delete id="deleteTagByTID" parameterType="java.lang.String">
+        delete from tag where tagID = #{tid}
+    </delete>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into tag ( <include refid="tag_column_sql" /> )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.tagID},#{item.tagName},#{item.orderNum})
+        </foreach>
+    </insert>
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.SystemActivityFollow">
+    <sql id="systemActivityFollow_column_sql">
+        systemActivityFollowID,activityID,activityFollowNum,personID,createTime
+    </sql>
+    <insert id="insert" parameterType="com.mai.activity.entity.SystemActivityFollow">
+        insert into systemactivityfollow(
+        <include refid="systemActivityFollow_column_sql"></include>
+        )
+        VALUES(
+        #{systemActivityFollowID},#{activityID},#{activityFollowNum},#{personID},#{createTime}
+        )
+    </insert>
+
+    <select id="findSystemActivityFollowByAID" parameterType="java.lang.String"
+            resultType="com.mai.activity.entity.SystemActivityFollow">
+        select * from systemactivityfollow where activityID = #{aid}
+    </select>
+    <update id="updateSystemActivityFollow" parameterType="com.mai.activity.entity.SystemActivityFollow">
+        update systemactivityfollow
+        <set>
+            activityID = #{activityID},
+            activityFollowNum = #{activityFollowNum},
+            personID = #{personID},
+            createTime = #{createTime}
+        </set>
+        <where>
+            systemActivityFollowID = #{systemActivityFollowID}
+        </where>
+    </update>
+</mapper>

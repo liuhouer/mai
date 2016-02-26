@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.PhotoTag">
+    <sql id="photoTag_column_sql">
+        tagID,tagContent64,orderNum,photoID,createTime,status,personID,personName,pointX,pointY,tagColor
+    </sql>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into phototag ( <include refid="photoTag_column_sql" /> )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.tagID},#{item.tagContent64},#{item.orderNum},#{item.photoID},#{item.createTime},#{item.status},#{item.personID},#{item.personName},#{item.pointX},#{item.pointY},#{item.tagColor})
+        </foreach>
+    </insert>
+    
+     <insert id="insert" parameterType="com.mai.activity.entity.PhotoTag">
+        insert into phototag(
+        <include refid="photoTag_column_sql"></include>
+        )
+        VALUES(
+       #{tagID},	#{tagContent64},	#{orderNum},	#{photoID},
+       #{createTime},	#{status},	#{personID},	#{personName},	#{pointX},	
+       #{pointY},	#{tagColor}
+        )
+    </insert>
+    
+    
+    <select id="findAllByPhotoID"  parameterType="string"
+            resultType="com.mai.activity.entity.PhotoTag">
+        select * from phototag where photoID = #{photoID}  order by   createTime desc 
+    </select>
+    
+    
+    <select id="findByID"  parameterType="string"
+            resultType="com.mai.activity.entity.PhotoTag">
+        select * from phototag where tagID = #{id}
+    </select>
+    
+    <update id="updateByID"  parameterType="hashmap">
+     	update  photo set isValid = 0  where photoID = #{id} 
+    </update>
+    
+    <delete id="deleteByID" parameterType="java.lang.String">
+        delete from phototag where tagID = #{tagID}
+    </delete>
+    
+    <delete id="deleteByphotoID" parameterType="java.lang.String">
+        delete from phototag where photoID = #{photoID}
+    </delete>
+</mapper>

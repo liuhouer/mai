@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.Photo">
+    <sql id="photo_column_sql">
+      photoID,photoURL,societyID,activityID,isValid,isReported,width,height,personID,personName,createTime,notes
+    </sql>
+    <insert id="insert" parameterType="com.mai.activity.entity.Activity">
+        insert into photo(
+        <include refid="photo_column_sql"></include>
+        )
+        VALUES(
+       #{photoID},	#{photoURL},	#{societyID},	#{activityID},	
+       #{isValid},	#{isReported},	#{width},	#{height},	#{personID},
+       #{personName},	#{createTime},	#{notes}
+        )
+    </insert>
+    
+    <select id="findAllByPage"  
+            resultType="com.mai.vo.PhotoVO">
+        <!-- select * from photo where isReported = 1 order by createTime DESC -->
+        select distinct(a.photoReportID) as photoReportID,a.photoID,b.photoURL,b.isReported,a.notes,a.createTime,a.status,c.name as personName from photoreport a left join photo b on a.photoID = b.photoID join person c on a.personID = c.personID where (a.status = 0 or a.status  = 2) and b.photoURL != 'NULL' order by a.createTime DESC
+    </select>
+    
+    <select id="findWallByPage"  
+            resultType="com.mai.activity.entity.Photo">
+        select photoID,photoURL,societyID,activityID,isValid,isReported,width,height,personID,personName,notes,createTime,FROM_UNIXTIME(createTime/1000,'%Y-%m-%d %H:%i') as showTime from photo 
+        
+        
+        <where>
+            ${_parameter}
+        </where>
+        
+         order by   createTime desc 
+    </select>
+    
+    
+    <select id="findByID"  parameterType="string"
+            resultType="com.mai.activity.entity.Photo">
+        select * from photo where photoID = #{id}
+    </select>
+    
+    <update id="updateByID"  parameterType="hashmap">
+     	update  photo set isValid = 0  where photoID = #{id} 
+    </update>
+    
+    <update id="updateST"  parameterType="hashmap">
+     	update  photoreport set status = #{status}  where photoID = #{photoID} 
+    </update>
+    
+    <update id="updateRE"  parameterType="hashmap">
+     	update  photo  set isReported = #{status}  where photoID = #{photoID} 
+    </update>
+
+    <select id="findPhotoByWH"
+            resultType="com.mai.activity.entity.Photo">
+        select * from photo where width is null or height is null or width = 0 or height = 0
+    </select>
+
+    <update id="updateWH"  parameterType="com.mai.activity.entity.Photo">
+        update photo set
+        width = #{width},height=#{height}
+        where photoID = #{photoID}
+    </update>
+
+    <delete id="delPicByID" parameterType="java.lang.String">
+        delete from photo where photoID = #{photoID}
+    </delete>
+
+    <select id="findPhotoByActivityID"
+            resultType="com.mai.activity.entity.Photo">
+        select * from photo where activityID = #{activityID}
+    </select>
+    
+</mapper>

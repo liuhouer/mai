@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.Person">
+    <sql id="person_column_sql">
+        personID,name,phoneNum,gender,headerURL,schoolID,
+        schoolName,signature,createTime,updateTime,isValid,operateTime,isPresident
+    </sql>
+    <insert id="insert" parameterType="com.mai.user.entity.Person">
+        insert into person(
+        <include refid="person_column_sql"></include>
+        )
+        VALUES(
+        
+		#{personID},	#{name},	#{phoneNum},	#{gender},
+			#{headerURL},	#{schoolID},	#{schoolName},	#{signature},
+				#{createTime},	#{updateTime},	#{isValid},#{operateTime},#{isPresident}
+        )
+    </insert>
+
+    <update id="updatePerson" parameterType="com.mai.user.entity.Person">
+        update person
+        <set>
+            name = #{name},
+            phoneNum = #{phoneNum},
+            gender = #{gender},
+            headerURL = #{headerURL},
+            schoolID = #{schoolID},
+            schoolName = #{schoolName},
+            signature = #{signature},
+            updateTime = #{updateTime},
+            isValid = #{isValid},
+            isPresident = #{isPresident}
+        </set>
+        <where>
+            personID = #{personID}
+        </where>
+    </update>
+
+    
+    <select id="getPersonByID" parameterType="java.lang.String"
+            resultType="com.mai.user.entity.Person">
+        select * from person where personID = #{personID}
+    </select>
+
+    <select id="getPersonByUID" parameterType="java.lang.String"
+            resultType="com.mai.user.entity.Person">
+        select person.* from user,person where user.personID = person.personID and userID = #{userID}
+    </select>
+</mapper>

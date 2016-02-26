@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.SystemSocietyPraise">
+    <sql id="systemSocietyPraise_column_sql">
+        systemSocietyPraiseID,societyID,societyPraiseNum,personID,createTime
+    </sql>
+    <insert id="insert" parameterType="com.mai.society.entity.SystemSocietyFollow">
+        insert into systemsocietypraise(
+        <include refid="systemSocietyPraise_column_sql"></include>
+        )
+        VALUES(
+        #{systemSocietyPraiseID},#{societyID},#{societyPraiseNum},#{personID},#{createTime}
+        )
+    </insert>
+
+    <select id="findSystemSocietyPraiseBySID" parameterType="java.lang.String"
+            resultType="com.mai.society.entity.SystemSocietyPraise">
+        select * from systemsocietypraise where societyID = #{sid}
+    </select>
+    <update id="updateSystemSocietyPraise" parameterType="com.mai.society.entity.SystemSocietyPraise">
+        update systemsocietypraise
+        <set>
+            societyID = #{societyID},
+            societyPraiseNum = #{societyPraiseNum},
+            personID = #{personID},
+            createTime = #{createTime}
+        </set>
+        <where>
+            systemSocietyPraiseID = #{systemSocietyPraiseID}
+        </where>
+    </update>
+</mapper>

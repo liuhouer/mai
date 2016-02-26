@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.ActivityDetail">
+    <sql id="activityDetail_column_sql">
+        activityDetailID,activityDetail ,activityDetailHerf,createTime,createPersonID,createPersonName
+    </sql>
+    <insert id="insert" parameterType="com.mai.activity.entity.ActivityDetail">
+        insert into activitydetail(
+        <include refid="activityDetail_column_sql"></include>
+        )
+        VALUES(
+        #{activityDetailID},#{activityDetail},#{activityDetailHerf},#{createTime},#{createPersonID},#{createPersonName}
+        )
+    </insert>
+
+    <update id="updateActivityDetailByID" parameterType="com.mai.activity.entity.ActivityDetail">
+        update activitydetail
+        <set>
+            activityDetail = #{activityDetail},
+            activityDetailHerf = #{activityDetailHerf},
+            createTime = #{createTime},
+            createPersonID = #{createPersonID},
+            createPersonName = #{createPersonName}
+        </set>
+        <where>
+            activityDetailID = #{activityDetailID}
+        </where>
+    </update>
+
+    <select id="findActivityDetailByID" parameterType="java.lang.String"
+            resultType="com.mai.activity.entity.ActivityDetail">
+        select * from activitydetail
+        <where>
+            activityDetailID = #{id}
+        </where>
+    </select>
+</mapper>

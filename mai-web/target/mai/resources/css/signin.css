@@ -1,0 +1,106 @@
+body {
+    /*padding-top: 40px;*/
+    /*padding-bottom: 40px;*/
+    /*background-color: #eee;*/
+    width: 100%;
+    height: 100%;
+}
+img{
+    width:100%!important;
+    height:auto!important
+}
+button{
+    background-color: #FFAA33;
+    color: #fff;
+}
+.index_01{
+    height: 5%;
+    width: 100%;
+    overflow:auto;
+}
+.index_02{
+    background-image:url("/resources/images/index/index_02.png");
+    background-repeat:no-repeat;
+    -moz-background-size:100% 100%;
+    background-size:100% 100%;
+}
+.index_02_01{
+    left:55%;
+    bottom:-15%;
+    height: 70%;
+    background-color:#FFFFFF;
+    border:1px solid #ccc;
+    margin:2em auto 1em;
+    /*max-width:650px;*/
+    /*min-width:544px;*/
+    -moz-border-radius:20px;
+    -webkit-border-radius:20px;
+    border-radius:20px;
+
+}
+.index_03{
+    height: 10%;
+    width: 100%;
+    overflow:auto;
+}
+.index_04{
+    height: 20%;
+    width: 100%;
+    overflow:auto;
+}
+.index_05{
+    height: 25%;
+    width: 100%;
+    overflow:auto;
+}
+.index_06{
+    background-color: #ff9900;
+    font-family:'Courier New','Microsoft YaHei';
+    color: #fff;
+    font-weight: lighter;
+    font-size:16px;
+    height: 10%;
+    width: 100%;
+    overflow:auto;
+}
+.form-signin {
+    max-width: 330px;
+    padding: 50px 15px 15px 15px;
+    margin: 0 auto;
+}
+
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+    margin-bottom: 10px;
+}
+
+.form-signin .checkbox {
+    font-weight: normal;
+}
+
+.form-signin .form-control {
+    position: relative;
+    height: auto;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.form-signin .form-control:focus {
+    z-index: 2;
+}
+
+/*.form-signin input[type="email"] {*/
+    /*margin-bottom: -1px;*/
+    /*border-bottom-right-radius: 0;*/
+    /*border-bottom-left-radius: 0;*/
+/*}*/
+
+/*.form-signin input[type="password"] {*/
+    /*margin-bottom: 10px;*/
+    /*border-top-left-radius: 0;*/
+    /*border-top-right-radius: 0;*/
+/*}*/
+

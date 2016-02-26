@@ -1,0 +1,447 @@
+*{
+    margin: 0;
+    outline: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    text-align:center;
+}
+html {
+    height: 100%;
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.231;
+    -webkit-touch-callout: none;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-box-align: stretch;
+    position: relative;
+}
+.body{
+    height:100%;
+    max-width:640px;
+    margin:auto;
+    -webkit-background-size:100% auto;
+    min-height: 100%;
+}
+
+
+.color_golden{
+    color:#fff000;
+}
+
+
+
+a.btn_music{
+    display:inline-block;
+    width:25px;
+    height:25px;
+    margin:5px 10px;
+    min-width:25px;
+    background:url("/resources/images/egg/v72_2.png") no-repeat right center;
+    background-size:auto 100%;
+}
+a.btn_music.on{
+    background-position:left center;
+}
+/*******************************************/
+.stage {
+    width: 100%;
+    height:100%;
+    position: relative;
+    table-layout: fixed;
+    word-wrap: break-word;
+    overflow: hidden;
+}
+.stage>img{
+    background-repeat: repeat;
+    -webkit-background-size:100% auto;
+    width:100%;
+    max-height:100%;
+    pointer-events:none;
+    border: none;
+}
+
+.plane{
+    width:40%;
+    height:auto;
+    position: absolute;
+    text-align:center;
+    z-index:200;
+    /*border:1px solid #F00*/;
+}
+.plane>img{
+    background-repeat: no-repeat;
+    background-position:50% 50%;
+    background-size:80%;
+    z-index:210;
+    max-width:100%;
+    /*min-height:auto;*/
+    max-height:700px;
+    pointer-events:none;
+}
+
+.plane.one{top:32%;}
+.plane.two{left:30%;top:31%;}
+.plane.three{left:60%;top:32%;}
+
+@media screen and (device-height: 960px) {
+    .plane.one {
+        top: 22%;
+    }
+
+    .plane.two {
+        left: 30%;
+        top: 21%;
+    }
+
+    .plane.three {
+        left: 60%;
+        top: 22%;
+    }
+}
+
+.tit{
+    top:-18%;
+    left:25%;
+    width:50%;
+    height:70%;
+    position: absolute;
+    z-index:120;
+    background: url(/resources/images/egg/tit.png) no-repeat center center;
+    background-position:50% 50%;
+    background-size:contain;
+}
+.button1{
+    top:58%;
+    right:10%;
+    width:35%;
+    height:12%;
+    position: absolute;
+    z-index:200;
+    background: url(/resources/images/egg/5.png) no-repeat center center;
+    background-position:50% 50%;
+    background-size:contain;
+    border: none;
+}
+.button2{
+    top:60%;
+    right:15%;
+    width:25%;
+    height:12%;
+    position: absolute;
+    z-index:200;
+    background: url(/resources/images/egg/5.png) no-repeat center center;
+    background-position:50% 50%;
+    background-size:contain;
+    border: none;
+}
+
+.stage .hit{
+    position: absolute;
+    z-index:310;
+    width:25%;
+    height:15%;
+    left:50%;
+    top:50%;
+    background: url(/resources/images/egg/1.png) no-repeat center center;
+    background-position:50% 50%;
+    background-size:contain;
+    margin-left:0px;
+    margin-top:-80px;
+    pointer-events:none;
+    display: none;
+}
+.stage .light{
+    position: absolute;
+    z-index:300;
+    height: 90%;
+    width: 60%;
+    background: url(/resources/images/egg/eggl.png) no-repeat center center;
+    background-position:50% 50%;
+    background-size:contain;
+    pointer-events:none;
+}
+@-webkit-keyframes egg_light{
+    0%{opacity: 0;}
+    50%{opacity: 0.5;}
+    100%{opacity: 1;}
+}
+.stage .broken{
+    position: absolute;
+    z-index:300;
+    height: 90%;
+    width: 55%;
+    background: url(/resources/images/egg/eggb.png) no-repeat center center;
+    background-position:50% 50%;
+    background-size:contain;
+    pointer-events:none;
+    display: none;
+}
+
+.stage .hit.on{
+    display: block;
+}
+
+.mask {
+    position: absolute; top: 0px; filter: alpha(opacity=60); background-color: #777;
+    z-index: 1002; left: 0px;
+    opacity:0.5; -moz-opacity:0.5;
+}
+
+.btn_zj{
+    position: absolute;
+    z-index: 1003;
+    width:80%;
+    height:80%;
+    margin-left:auto;
+    margin-right:auto;
+    background: url(/resources/images/egg/zj.png) no-repeat;
+    background-size:contain;
+    display: none;
+    border: none;
+}
+
+.btn_init{
+    position: absolute;
+    z-index: 1003;
+    width:80%;
+    height:80%;
+    margin-left:auto;
+    margin-right:auto;
+    background: url(/resources/images/egg/phone.png) no-repeat;
+    background-size:contain;
+    display: none;
+    border: none;
+}
+
+.btn_btn_zj_2>p{
+    color: #FFFFFF;
+    text-shadow: 1px 1px 0px #212121;
+    width: 100%;
+    height: 24px;
+    line-height: 24px;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    margin-top: -12px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.btn_btn_zj_2{
+    position: absolute;
+    width:50%;
+    height:10%;
+    left:25%;
+    margin-top:15%;
+    background: url(/resources/images/egg/5.png) no-repeat center center;
+    background-position:50% 50%;
+    background-size:contain;
+    border: none;
+}
+
+
+.btn2_bg{
+    position: absolute;
+    z-index: 1003;
+    width:80%;
+    height:70%;
+    margin-left:auto;
+    margin-right:auto;
+    background: url(/resources/images/egg/phone.png) no-repeat;
+    background-position:50% 50%;
+    background-size:contain;
+    display: none;
+    border: none;
+}
+
+
+.btn1_bg{
+    position: absolute;
+    z-index: 1003;
+    width:80%;
+    height:70%;
+    margin-left:auto;
+    margin-right:auto;
+    background: url(/resources/images/egg/b1.png) no-repeat;
+    background-position:50% 50%;
+    background-size:contain;
+    display: none;
+    border: none;
+}
+
+.btn_tit{
+    text-align:center;
+    margin-top:15%;
+    margin-bottom:10px;
+    color: #ffcc00
+}
+
+.btn_p{
+    /*padding-top:30%;*/
+    width:80%;
+    height:55%;
+    padding-left: 10%;
+    padding-right: 10%;
+    overflow: auto;
+}
+
+.btn_p > label{
+    width:90%;
+}
+
+.lable_point{
+    text-align:center;
+    top:62%;
+    left:5%;
+    width:45%;
+    height:5%;
+    position: absolute;
+    z-index:200;
+    color: #FFFFFF;
+    font-family: Microsoft YaHei;
+}
+
+
+ul.marquee {display: block;
+    top: 20%;margin:0 auto;line-height: 1;position: relative;overflow: hidden;width: 100%; height: 20px;}
+ul.marquee li {
+    position: absolute;
+    top: -999em;
+    width:100%;
+    white-space: nowrap;
+    font-family:Microsoft YaHei;
+}
+
+.btn1_btn{
+    position: absolute;
+    width:40%;
+    height:10%;
+    left:30%;
+    padding-top: 19%;
+    background: url(/resources/images/egg/5.png) no-repeat center center;
+    background-position:50% 50%;
+    background-size:contain;
+    border: none;
+}
+
+.btn_btn_init{
+    position: absolute;
+    width:40%;
+    height:10%;
+    left:30%;
+    padding-top: 19%;
+    background: url(/resources/images/egg/5.png) no-repeat center center;
+    background-position:50% 50%;
+    background-size:contain;
+    border: none;
+}
+
+.button1 p,.button2 p,.btn_btn_init p{
+    color: #FFFFFF;
+    text-shadow: 1px 1px 0px #212121;
+    width: 100%;
+    height: 24px;
+    line-height: 24px;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    margin-top: -12px;
+    font-size: 14px;
+    text-align: center;
+}
+
+#btn_btn>p{
+    color: #FFFFFF;
+    text-shadow: 1px 1px 0px #212121;
+    width: 100%;
+    height: 24px;
+    line-height: 24px;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    margin-top: -12px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.dj_left{
+    width:30%;
+    height:10%;
+    left:15%;
+}
+
+.dj_right{
+    width:30%;
+    height:10%;
+    left:55%;
+}
+
+.close{
+    display: none;
+}
+
+.dj_right>p{
+    text-shadow: 1px 1px 0px #FFFFFF;
+    width: 100%;
+    height: 24px;
+    line-height: 24px;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    margin-top: -12px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.btn_p_zj{
+    padding-top:30%;
+    padding-left: 35px;
+    padding-right: 35px;
+    text-align:center;
+    font-size: 1.5em;
+    color: #996600;
+}
+
+.btn_p_init{
+    padding-top:20%;
+    padding-left: 10%;
+    padding-right: 10%;
+    overflow: auto;
+}
+
+.btn_submit{
+    margin-top: 5%;
+    left:35%;
+}
+
+
+/*.mulitline{position: relative;top: 20%}*/
+.div_marquee{
+    position: absolute;
+    width:80%;
+    margin: 0 auto;
+    text-align:center;
+    top:75%;
+    height:25%;
+    right:10%;
+    z-index:200;
+    color: #000000;
+    font-family: Microsoft YaHei;
+    background: url(/resources/images/egg/marquee.png) no-repeat;
+    background-position:50% 50%;
+    background-size:contain;
+    /*border:1px solid #F00*/;
+}
+/*.scrollDiv{min-height:25px;line-height:25px;overflow:hidden}*/
+.scrollDiv li{height:25px;line-height:25px;}

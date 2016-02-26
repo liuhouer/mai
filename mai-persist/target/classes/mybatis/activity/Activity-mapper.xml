@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.Activity">
+    <sql id="activity_column_sql">
+        activityID,activityTitle ,activityStatus,maxPersonNum,joinPersonNum ,
+        location,address ,gpsLatitude ,gpsLongitude,phoneNum,categoryID,categoryName,
+        supportICO,supportDescription,coverURL,needCheck ,isInner ,recommendNo ,
+        societyID ,societyName ,createTime,startTime ,endTime ,hotNum,followNum ,
+        notes ,adminID ,adminName ,activityDetailID,activityDetail,activity.schoolID,isLog,geohash,shareURL,shareDESC
+    </sql>
+    <insert id="insert" parameterType="com.mai.activity.entity.Activity">
+        insert into activity(
+        <include refid="activity_column_sql"></include>
+        )
+        VALUES(
+        #{activityID},#{activityTitle },#{activityStatus},#{maxPersonNum},#{joinPersonNum },#{location},#{address },
+        #{gpsLatitude },#{gpsLongitude},#{phoneNum},#{categoryID},#{categoryName},#{supportICO},
+        #{supportDescription},#{coverURL},#{needCheck },#{isInner },#{recommendNo },#{societyID },#{societyName },
+        #{createTime},#{startTime },#{endTime },#{hotNum},#{followNum },#{notes },#{adminID },#{adminName },#{activityDetailID},#{activityDetail},
+        #{schoolID},#{isLog},#{geohash},#{shareURL},#{shareDESC}
+        )
+    </insert>
+
+    <select id="findActivityByPage" parameterType="com.mai.activity.entity.Activity"
+            resultType="com.mai.activity.entity.Activity">
+        select * from activity
+    </select>
+
+    <select id="findActivityList" parameterType="java.lang.String"
+            resultType="com.mai.activity.entity.Activity">
+        select <include refid="activity_column_sql"></include>,schoolName,FROM_UNIXTIME(startTime/1000,'%Y-%m-%d %H:%i') as showStartTime,FROM_UNIXTIME(endTime/1000,'%Y-%m-%d %H:%i') as showEndTime
+        from activity LEFT JOIN school ON school.schoolID = activity.schoolID
+        <where>
+            ${_parameter}
+        </where>
+          ORDER by createTime DESC
+    </select>
+
+    <update id="updateActivityStatus" parameterType="java.util.Map">
+        update activity
+          <set>
+              activityStatus = #{status},
+              <if test="status == -2 or status == -3">
+                  isLog = 1
+              </if>
+          </set>
+         <where>
+             activityID = #{id}
+         </where>
+    </update>
+
+    <select id="findActivityByID" parameterType="java.lang.String"
+            resultType="com.mai.activity.entity.Activity">
+        select *,FROM_UNIXTIME(startTime/1000,'%Y-%m-%d %H:%i') as showStartTime,FROM_UNIXTIME(endTime/1000,'%Y-%m-%d %H:%i') as showEndTime from activity
+        <where>
+            activityID = #{id}
+        </where>
+    </select>
+    <update id="updateActivity" parameterType="com.mai.activity.entity.Activity">
+        update activity
+        <set>
+            activityTitle = #{activityTitle},
+            activityStatus = #{activityStatus},
+            maxPersonNum = #{maxPersonNum},
+            location = #{location},
+            address = #{address},
+            gpsLatitude = #{gpsLatitude},
+            gpsLongitude = #{gpsLongitude},
+            phoneNum = #{phoneNum},
+            categoryID = #{categoryID},
+            categoryName = #{categoryName},
+            supportICO = #{supportICO},
+            supportDescription = #{supportDescription},
+            coverURL = #{coverURL},
+            needCheck = #{needCheck},
+            isInner = #{isInner},
+            recommendNo = #{recommendNo},
+            societyID = #{societyID},
+            societyName = #{societyName},
+            createTime = #{createTime},
+            startTime = #{startTime},
+            endTime = #{endTime},
+            notes = #{notes},
+            adminID = #{adminID},
+            adminName = #{adminName},
+            activityDetailID = #{activityDetailID},
+            activityDetail = #{activityDetail},
+            schoolID = #{schoolID},
+            isLog = #{isLog},
+            geohash = #{geohash},
+            shareURL = #{shareURL},
+            shareDESC = #{shareDESC}
+        </set>
+        <where>
+            activityID = #{activityID}
+        </where>
+    </update>
+    <update id="updateActivitySupportInfoByAID" parameterType="java.util.Map">
+        update activity
+        <set>
+            supportDescription = #{supportDescription}
+            <if test="supportICO != null and supportICO != ''">
+                ,supportICO = #{supportICO}
+            </if>
+        </set>
+        <where>
+            activityID = #{activityID}
+        </where>
+    </update>
+
+    <select id="findActivityByActTitleAndStatus" parameterType="java.util.Map"
+            resultType="com.mai.activity.entity.Activity">
+        select *,FROM_UNIXTIME(startTime/1000,'%Y-%m-%d %H:%i') as showStartTime,FROM_UNIXTIME(endTime/1000,'%Y-%m-%d %H:%i') as showEndTime from activity
+        <where>
+            activityTitle = #{actTitle}
+            <if test="actStatus != null and actStatus != ''">
+                and activityStatus = #{actStatus}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateActivityStatusByAdminID" parameterType="java.util.Map">
+        update activity
+        <set>
+            activityStatus = #{status},
+            <if test="status == -2 or status == -3">
+                isLog = 1
+            </if>
+        </set>
+        <where>
+            adminID = #{adminID} and activityStatus > 0
+        </where>
+    </update>
+    <update id="updateActivityStatusBySocietyID" parameterType="java.util.Map">
+        update activity
+        <set>
+            activityStatus = #{status},
+            <if test="status == -2 or status == -3">
+                isLog = 1
+            </if>
+        </set>
+        <where>
+            societyID = #{societyID} and activityStatus > 0
+        </where>
+    </update>
+    <select id="findActivityByAdminIDAndValid" parameterType="java.lang.String" resultType="com.mai.activity.entity.Activity">
+          select * from activity
+          <where>
+              adminID = #{adminID} and activityStatus &lt; 0
+          </where>
+    </select>
+
+    <select id="findActivityBySocietyIDAndValid" parameterType="java.lang.String" resultType="com.mai.activity.entity.Activity">
+        select * from activity
+        <where>
+            societyID = #{societyID} and activityStatus &lt; 0
+        </where>
+    </select>
+
+    <select id="findActivityRunningByPage" parameterType="java.lang.String"
+            resultType="com.mai.vo.ActivityRunningVO">
+        select *,FROM_UNIXTIME(startTime/1000,'%Y-%m-%d %H:%i') as showStartTime from activity LEFT JOIN systemactivityfollow ON activity.activityID = systemactivityfollow.activityID
+        <where>
+            ${_parameter}
+        </where>
+        order by recommendNo DESC,activity.startTime DESC
+    </select>
+
+    <!--更新推荐位 -->
+    <update id="updateRecommendNoByID"  parameterType="Map">
+        update activity
+        <set>
+            recommendNo = #{recommendNo}
+        </set>
+        <where>
+            activityID = #{activityID}
+        </where>
+    </update>
+
+    <select id="findCategoryDetailByPage" parameterType="java.lang.String"
+            resultType="com.mai.activity.entity.Activity">
+        select *,FROM_UNIXTIME(startTime/1000,'%Y-%m-%d %H:%i') as showStartTime from activity
+        <where>
+            ${_parameter}
+        </where>
+        order by activity.startTime DESC
+    </select>
+
+    <update id="updateCategoryNameByCID"  parameterType="Map">
+        update activity
+        <set>
+            categoryName = #{categoryName}
+        </set>
+        <where>
+            categoryID = #{categoryID}
+        </where>
+    </update>
+
+    <select id="findTagDetailByPage" parameterType="java.lang.String"
+            resultType="com.mai.activity.entity.Activity">
+        select activityStatus,societyName,activityTitle,FROM_UNIXTIME(startTime/1000,'%Y-%m-%d %H:%i') as showStartTime
+        from activity LEFT JOIN tag_activity_ref ON activity.activityID = tag_activity_ref.activityID
+        <where>
+            ${_parameter}
+        </where>
+        order by activity.startTime DESC
+    </select>
+
+    <select id="findActivityListByTime" parameterType="java.util.Map" resultType="com.mai.activity.entity.Activity">
+          select * from activity
+            <where>
+                startTime &gt;= #{startTime} and startTime &lt;= #{endTime}
+                <if test="actStatus != null and actStatus != ''">
+                    and activityStatus = #{actStatus}
+                </if>
+            </where>
+    </select>
+
+    <update id="updateActivityJoinPersonNum" parameterType="com.mai.activity.entity.Activity">
+        update activity set joinPersonNum=#{joinPersonNum} where activityID=#{activityID}
+    </update>
+    <update id="updateActivitySocietyNameBySocietyID" parameterType="com.mai.activity.entity.Activity">
+        update activity
+        <set>
+            societyName = #{societyName},
+        </set>
+        <where>
+            societyID = #{societyID}
+        </where>
+    </update>
+    <select id="findActivityBySocietyID" parameterType="java.lang.String" resultType="com.mai.activity.entity.Activity">
+        select * from activity
+        <where>
+            societyID = #{societyID}
+        </where>
+    </select>
+</mapper>

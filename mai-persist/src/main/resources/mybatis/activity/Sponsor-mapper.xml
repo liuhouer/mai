@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.Sponsor">
+    <sql id="sponsor_column_sql">
+        sponsorID,sponsorName,activityID,createTime,appTime,updateTime,phoneNum,adminID,adminName,sponsorStatus,sponsorNote
+    </sql>
+    <sql id="select_sponsor_column_sql">
+        sponsorID,sponsorName,sponsor.activityID,sponsor.createTime,appTime,updateTime,sponsor.phoneNum,sponsor.adminID,sponsor.adminName,sponsorStatus,sponsorNote
+    </sql>
+    <insert id="insert" parameterType="com.mai.activity.entity.Sponsor">
+        insert into sponsor(
+        <include refid="sponsor_column_sql"></include>
+        )
+        VALUES(
+        #{sponsorID},#{sponsorName},#{activityID},#{createTime},#{appTime},#{updateTime},#{phoneNum},#{adminID},#{adminName},
+        #{sponsorStatus},#{sponsorNote}
+        )
+    </insert>
+
+    <update id="updateSponsorStatusByID" parameterType="java.util.Map">
+        update sponsor
+        <set>
+            sponsorStatus = #{sponsorStatus}
+        </set>
+        <where>
+            sponsorID = #{sponsorID}
+        </where>
+    </update>
+
+    <update id="updateSponsor" parameterType="com.mai.activity.entity.Sponsor">
+        update sponsor
+        <set>
+            sponsorName = #{sponsorName},
+            activityID = #{activityID},
+            createTime = #{createTime},
+            phoneNum = #{phoneNum},
+            adminID = #{adminID},
+            adminName = #{adminName},
+            sponsorStatus = #{sponsorStatus},
+            sponsorNote = #{sponsorNote},
+            appTime = #{appTime},
+            updateTime = #{updateTime}
+        </set>
+        <where>
+            sponsorID = #{sponsorID}
+        </where>
+    </update>
+
+    <select id="findSponsorByID" parameterType="java.util.Map"
+            resultType="com.mai.activity.entity.Sponsor">
+        select *,FROM_UNIXTIME(appTime/1000,'%Y-%m-%d %H:%i') as showAppTime from sponsor
+        <where> sponsorID = #{sponsorID}
+            <if test="sponsorStatus != null and sponsorStatus != ''">
+                and sponsorStatus = #{sponsorStatus}
+            </if>
+        </where>
+    </select>
+
+    <select id="findSponsorList" parameterType="java.util.Map"
+            resultType="com.mai.activity.entity.Sponsor">
+        select <include refid="select_sponsor_column_sql"></include>,FROM_UNIXTIME(appTime/1000,'%Y-%m-%d %H:%i') as showAppTime,
+        activityTitle
+        from sponsor LEFT JOIN activity ON activity.activityID = sponsor.activityID
+        <where> 1=1
+            <if test="adminID != null and adminID != ''">
+                 and sponsor.adminID = #{adminID}
+            </if>
+            <if test="sponsorStatus != null and sponsorStatus != ''">
+                 and sponsorStatus = #{sponsorStatus}
+            </if>
+        </where> ORDER BY appTime DESC
+    </select>
+</mapper>

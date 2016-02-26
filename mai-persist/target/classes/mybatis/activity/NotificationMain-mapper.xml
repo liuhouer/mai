@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.NotificationMain">
+    <sql id="main_column_sql">
+     notificationMainID,notificationContent,createTime,personID,status,objID,objType,societyID
+    </sql>
+    <insert id="insert" parameterType="com.mai.notification.entity.NotificationMain">
+        insert into notificationmain(
+        <include refid="main_column_sql"></include>
+        )
+        VALUES(
+        	#{notificationMainID},	#{notificationContent},	#{createTime},	#{personID},	#{status},	#{objID},	#{objType}, #{societyID}
+        )
+    </insert>
+
+    <select id="findAllByPage"  parameterType="java.lang.String"
+            resultType="com.mai.notification.entity.NotificationMain">
+        select *,FROM_UNIXTIME(createTime/1000,'%Y-%m-%d %H:%i') as showTime  from notificationmain
+        
+        <where>
+            ${_parameter}
+        </where>
+        
+        order by createTime desc
+    </select>
+    
+    <select id="findMainById"  parameterType="java.lang.String"
+            resultType="com.mai.notification.entity.NotificationMain">
+        select *  from notificationmain 
+        
+        where notificationMainID = #{id}
+    </select>
+    
+    <update id="removeMainById"  parameterType="java.lang.String">
+        update notificationmain set status = -1
+        
+        where notificationMainID = #{id}
+    </update>
+    
+    <update id="updateSTById"  parameterType="hashmap">
+        update notificationmain set status = #{status}
+        
+        where notificationMainID = #{id}
+    </update>
+    
+</mapper>

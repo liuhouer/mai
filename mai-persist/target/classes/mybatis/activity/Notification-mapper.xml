@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.Notification">
+    <sql id="notification_column_sql">
+       notificationID,notificationType,fromPersonID,fromPersonName,toPersonID,isRead,
+       createTime,notificationContent,objID,notificationJson,needDeal,isDeal,dealResult,
+       dealNote,dealTime,dealPersonID,dealPersonName,headerURL,title,dealResultCode
+
+    </sql>
+    <insert id="insert" parameterType="com.mai.notification.entity.Notification">
+        insert into notification(
+        <include refid="notification_column_sql"></include>
+        )
+        VALUES(
+        #{notificationID},	#{notificationType},	#{fromPersonID},
+       	#{fromPersonName},	#{toPersonID},	#{isRead},	#{createTime},
+       	#{notificationContent},	#{objID},	#{notificationJson},	
+        #{needDeal},	#{isDeal},	#{dealResult},	#{dealNote},	
+       	#{dealTime},	#{dealPersonID},	#{dealPersonName},
+       	#{headerURL},	#{title},	#{dealResultCode}
+        )
+    </insert>
+
+    <select id="findActivityByPage" parameterType="com.mai.notification.entity.Notification"
+            resultType="com.mai.notification.entity.Notification">
+        select * from activity
+    </select>
+    
+    
+     <select id="getOldStatusList" parameterType="map"
+            resultType="com.mai.notification.entity.Notification">
+        select * from notification where  toPersonID = #{toPersonID} and notificationType = #{notificationType} and fromPersonID = #{fromPersonID} and needDeal = 1 and isDeal IS NULL
+    </select>
+    
+    <update id="updateModel" parameterType="com.mai.notification.entity.Notification">
+        update notification
+        <set>
+                
+	            
+	   	 notificationType = #{notificationType},
+	   	 
+	            
+	   	 fromPersonID = #{fromPersonID},
+	   	 
+	            
+	   	 fromPersonName = #{fromPersonName},
+	   	 
+	            
+	   	 toPersonID = #{toPersonID},
+	   	 
+	            
+	   	 isRead = #{isRead},
+	   	 
+	            
+	   	 createTime = #{createTime},
+	   	 
+	            
+	   	 notificationContent = #{notificationContent},
+	   	 
+	            
+	   	 objID = #{objID},
+	   	 
+	            
+	   	 notificationJson = #{notificationJson},
+	   	 
+	            
+	   	 needDeal = #{needDeal},
+	   	 
+	            
+	   	 isDeal = #{isDeal},
+	   	 
+	            
+	   	 dealResult = #{dealResult},
+	   	 
+	            
+	   	 dealNote = #{dealNote},
+	   	 
+	            
+	   	 dealTime = #{dealTime},
+	   	 
+	            
+	   	 dealPersonID = #{dealPersonID},
+	   	 
+	            
+	   	 dealPersonName = #{dealPersonName},
+	   	 
+	            
+	   	 headerURL = #{headerURL},
+	   	 
+	            
+	   	 title = #{title},
+	   	 
+	            
+	   	 dealResultCode = #{dealResultCode}
+	   	 
+	            </set>
+        <where>
+         notificationID = #{notificationID}
+        </where>
+    </update>
+    
+    
+    
+</mapper>

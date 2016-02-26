@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.SocietytagRef">
+    <sql id="SocietytagRef_column_sql">
+        societytagrefID,societyID,societyTagID
+    </sql>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into societytagref ( <include refid="SocietytagRef_column_sql" /> )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.societytagrefID},#{item.societyID},#{item.societyTagID})
+        </foreach>
+    </insert>
+
+    <select id="findSocietytagRefBySID" parameterType="java.lang.String"
+            resultType="com.mai.society.entity.SocietytagRef">
+        select * from societytagref where societyID = #{sid}
+    </select>
+
+    <delete id="deleteSocietytagRefBySID" parameterType="java.lang.String">
+        delete from societytagref where societyID = #{sid}
+    </delete>
+</mapper>

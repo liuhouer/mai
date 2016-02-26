@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.Category">
+    <sql id="category_column_sql">
+        categoryID,categoryName ,categoryOrderNum,imageURL
+    </sql>
+
+    <select id="findCategoryList" resultType="com.mai.activity.entity.Category">
+        select * from category ORDER BY categoryOrderNum
+    </select>
+
+
+    <select id="findCategoryInfoList" resultType="com.mai.activity.entity.Category">
+        select category.categoryID,category.categoryName,categoryOrderNum,count(activity.categoryID) as categoryCount,imageURL
+        from category LEFT JOIN activity ON activity.categoryID = category.categoryID GROUP BY category.categoryID ORDER BY categoryOrderNum
+    </select>
+
+    <update id="updateCategory" parameterType="com.mai.activity.entity.Category">
+        update category
+        <set>
+            <if test="categoryName != null and categoryName != ''">
+                categoryName = #{categoryName},
+            </if>
+            <if test="categoryOrderNum != null and categoryOrderNum != ''">
+                categoryOrderNum = #{categoryOrderNum},
+            </if>
+            <if test="imageURL != null and imageURL != ''">
+                imageURL = #{imageURL}
+            </if>
+        </set>
+        <where>
+            categoryID = #{categoryID}
+        </where>
+    </update>
+
+    <select id="findCategoryByID" resultType="com.mai.activity.entity.Category"
+            parameterType="java.lang.String">
+        select category.categoryID,category.categoryName,categoryOrderNum,count(activity.categoryID) as categoryCount,imageURL
+        from category LEFT JOIN activity ON activity.categoryID = category.categoryID where category.categoryID = #{categoryID} GROUP BY category.categoryID
+    </select>
+
+    <delete id="deleteCategoryByCID" parameterType="java.lang.String">
+        delete from category where categoryID = #{cid}
+    </delete>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into category ( <include refid="category_column_sql" /> )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.categoryID},#{item.categoryName},#{item.categoryOrderNum},#{item.imageURL})
+        </foreach>
+    </insert>
+</mapper>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.User">
+    <sql id="user_column_sql">
+        userID,personID,phoneNum,password,createTime,updateTime,isValid ,tokenCreateTime ,token
+    </sql>
+    <sql id="select_user_column_sql">
+        userID,user.personID ,user.phoneNum,person.phoneNum as personPhoneNum,password,user.createTime ,
+        user.updateTime,user.isValid ,tokenCreateTime ,token,name as personName,schoolID,schoolName
+    </sql>
+    <insert id="insert" parameterType="com.mai.user.entity.User">
+        insert into user(
+        <include refid="user_column_sql"></include>
+        )
+        VALUES(
+        #{userID},#{personID },#{phoneNum},#{password},#{createTime },#{updateTime},#{isValid },
+        #{tokenCreateTime },#{token}
+        )
+    </insert>
+
+    <update id="updateST"  parameterType="hashmap">
+        update user
+        <set>isValid = #{status}</set>
+        <where>
+            userID = #{id}
+        </where>
+    </update>
+
+    <update id="updatePWD"  parameterType="hashmap">
+        update user
+        <set>password = #{pwd}</set>
+        <where>
+            userID = #{id}
+        </where>
+    </update>
+
+    <select id="findUserByPhoneNumAndIsValid" parameterType="java.util.Map"
+            resultType="com.mai.user.entity.User">
+       select <include refid="select_user_column_sql"></include>
+          from user,person
+        <where> user.personID = person.personID and user.phoneNum = #{phoneNum}
+            <if test="isValid != null and isValid != ''">
+                and user.isValid = #{isValid}
+            </if>
+        </where>
+    </select>
+
+    <select id="findUserByPhoneNumAndPassword" parameterType="java.util.Map"
+            resultType="com.mai.user.entity.User">
+        select <include refid="select_user_column_sql"></include>
+          from user,person
+        <where> user.personID = person.personID and user.phoneNum = #{phoneNum} and password = #{password}
+            <if test="isValid != null and isValid != ''">
+                and user.isValid = #{isValid}
+            </if>
+        </where>
+    </select>
+    
+    <select id="findAll" parameterType="java.lang.String"
+            resultType="com.mai.vo.UserVO">
+        select a.userID ,a.personID,a.isValid,b.name,b.phoneNum,  FROM_UNIXTIME(b.createTime/1000,'%Y-%m-%d %H:%i') as createTime
+        from user  a join person b on a.personID = b.personID 
+        <!-- left join user_role_ref c on a.userID = c.userID
+        left join role d on c.roleID = d.roleID -->
+        <where>
+            ${_parameter}
+        </where>
+          ORDER by b.createTime DESC
+    </select>
+    
+    <select id="findAllByPage" parameterType="java.lang.String"
+            resultType="com.mai.vo.UserVO">
+        select a.userID ,a.personID,a.isValid,b.name,b.phoneNum,  FROM_UNIXTIME(b.createTime/1000,'%Y-%m-%d %H:%i') as createTime ,FROM_UNIXTIME(b.operateTime/1000,'%Y-%m-%d %H:%i') as operateTime 
+        from user  a join person b on a.personID = b.personID 
+        <!-- left join user_role_ref c on a.userID = c.userID
+        left join role d on c.roleID = d.roleID -->
+        <where>
+            ${_parameter}
+        </where>
+          ORDER by b.createTime DESC
+    </select>
+    
+    <select id="getUserByPid" parameterType="java.lang.String"
+            resultType="com.mai.user.entity.User">
+        select * from user where personID = #{personID}
+    </select>
+    
+    <select id="getUserByID" parameterType="java.lang.String"
+            resultType="com.mai.user.entity.User">
+        select * from user where userID = #{userID}
+    </select>
+    
+     <select id="findExpData" parameterType="java.lang.String"
+            resultType="com.mai.vo.ExpData">
+        select 
+        a.userid as userid,a.isValid as intST,FROM_UNIXTIME(b.operateTime/1000,'%Y-%m-%d %H:%i') as operateTime, a.phoneNum as phone,b.name as name,
+        x.schoolName as schoolName,
+        y.societyID,
+        ifnull((select societyName from society z where z.societyID = y.societyID),(select societyName from society z where z.adminID = a.personID and z.status >0 )) as societyName,
+        FROM_UNIXTIME(a.createTime/1000,'%Y-%m-%d %H:%i') as createTime
+        from user  a join person b on a.personID = b.personID 
+        
+		left JOIN school x ON b.schoolID = x.schoolID
+		left JOIN societymember y ON b.personID = y.personID
+		
+	
+        <where>
+            ${_parameter}
+        </where>
+          ORDER by a.createTime DESC
+    </select>
+    
+    <!-- 社联排名 -->
+    <select id="findMixRank" resultType="com.mai.vo.MixRankVO">
+
+		SELECT
+	a.schoolName,
+	sum(a.socNum) AS socNum,
+	sum(a.smNum) AS smNum,
+	sum(a.actNum) AS actNum,
+	sum(a.actmNum) AS actmNum,
+	sum(a.pNum) AS pNum,
+	sum(a.followNum) AS followNum
+FROM
+
+((select  
+
+case  
+
+when locate('大学',schoolName) > 0 then  concat(substring_index(schoolName,'大学',1),'大学')
+
+when locate('学院',schoolName) > 0 then  concat(substring_index(schoolName,'学院',1),'学院')
+
+when locate('学校',schoolName) > 0 then  concat(substring_index(schoolName,'学校',1),'学校')
+
+  else 
+ schoolName
+
+end as schoolName,
+
+
+
+    count(1) as socNum,
+		ifnull(sum(joinPersonNum),0) as smNum,
+		(select count(1) from activity where activityStatus = 1 and activity.schoolID = society.schoolID) as actNum,
+		ifnull((select sum(joinPersonNum) from activity where activityStatus = 1 and activity.schoolID = society.schoolID),0) as actmNum,
+		ifnull(sum(praiseNum),0) as pNum,
+		(ifnull(sum(followNum),0) + ifnull((select sum(followNum) from activity where activityStatus = 1 and activity.schoolID = society.schoolID),0)) as followNum
+		from society where status = 1 group by schoolName
+
+)
+
+as a) 
+
+group by a.schoolName
+
+    </select>
+    
+    <!-- 社团排名 -->
+    <select id="findSocRank" resultType="com.mai.vo.SocRankVO">
+
+		select societyName,schoolName,joinPersonNum,
+		(select count(1) from activity where activityStatus = 1 and activity.societyID = society.societyID) as actNum,
+		ifnull((select sum(joinPersonNum) from activity where activityStatus = 1 and activity.societyID = society.societyID),0) as actmNum,
+		ifnull(followNum,0) as followNum,ifnull(praiseNum,0) as praiseNum from society where status = 1
+    </select>
+    
+     <!-- 活动排名 -->
+    <select id="findActRank" resultType="com.mai.vo.ActRankVO">
+
+		select activityTitle,societyName,
+		(select schoolName from school where activity.schoolID = school.schoolID) as schoolName,
+		joinPersonNum,ifnull(followNum,0) as followNum from activity where activityStatus = 1 
+    </select>
+    
+</mapper>

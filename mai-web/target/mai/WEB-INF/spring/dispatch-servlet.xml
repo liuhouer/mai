@@ -1,0 +1,51 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+    <!--<context:annotation-config/>
+    <mvc:annotation-driven/>-->
+    <context:component-scan base-package="com.mai.controller"/>
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/view/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    <bean id="messageAdapter" class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <!-- Support JSON -->
+                <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="exceptionMessageAdapter"
+          class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver">
+        <property name="messageConverters">
+            <list>
+                <!-- Support JSON -->
+                <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+
+
+
+
+    <bean id="uploadService" class="com.qiniu.storage.UploadManager"></bean>
+
+    <bean id="starTask" class="com.mai.task.StarTask"></bean>
+    <bean id="auditActivityPersonTask" class="com.mai.task.AuditActivityPersonTask"></bean>
+     
+	 <!--要定时执行的方法--> 
+	<task:scheduled-tasks scheduler="myScheduler">
+        <task:scheduled ref="starTask" method="runTask"  cron="0 0 12,20 * * ?"/>
+        <task:scheduled ref="auditActivityPersonTask" method="runTask"  cron="0 10 3 * * ?"/>
+    </task:scheduled-tasks>
+    <task:scheduler id="myScheduler" pool-size="5"/>
+     <!--要定时执行的方法-->
+</beans>

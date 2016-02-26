@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.SocietyTag">
+    <sql id="societyTag_column_sql">
+        tagID,tagName,orderNum
+    </sql>
+    <insert id="insert" parameterType="com.mai.society.entity.SocietyTag">
+        insert into societytag(
+        <include refid="societyTag_column_sql"></include>
+        )
+        VALUES(
+        #{tagID},#{tagName},#{orderNum}
+        )
+    </insert>
+
+    <select id="findSTagList" resultType="com.mai.society.entity.SocietyTag">
+        select * from societytag ORDER BY orderNum
+    </select>
+
+    <select id="findSocietyTagInfoList" resultType="com.mai.society.entity.SocietyTag">
+        select tagID,tagName,orderNum,count(societyTagID) as scoietyTagCount
+        from societytag LEFT JOIN societytagref ON tagID = societyTagID GROUP BY tagID ORDER BY orderNum
+    </select>
+
+    <update id="updateSocietyTag" parameterType="com.mai.society.entity.SocietyTag">
+        update societytag
+        <set>
+            tagName = #{tagName},
+            <if test="orderNum != null and orderNum != ''">
+                orderNum = #{orderNum}
+            </if>
+        </set>
+        <where>
+            tagID = #{tagID}
+        </where>
+    </update>
+
+    <select id="findSocietyTagByID" resultType="com.mai.society.entity.SocietyTag"
+            parameterType="java.lang.String">
+        select tagID,tagName,orderNum,count(societyTagID) as scoietyTagCount
+        from societytag LEFT JOIN societytagref ON tagID = societyTagID where tagID = #{tagID} GROUP BY tagID
+    </select>
+
+    <delete id="deleteSocietyTagByTID" parameterType="java.lang.String">
+        delete from societytag where tagID = #{tid}
+    </delete>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into societytag ( <include refid="societyTag_column_sql" /> )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.tagID},#{item.tagName},#{item.orderNum})
+        </foreach>
+    </insert>
+</mapper>

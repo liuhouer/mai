@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.User_role_ref">
+    <sql id="user_role_ref_column_sql">
+        userRoleRefID,userID,roleID
+    </sql>
+	<insert id="insert" parameterType="com.mai.user.entity.UserroleRef">
+        insert into user_role_ref(
+        <include refid="user_role_ref_column_sql"></include>
+        )
+        VALUES(
+       	#{userRoleRefID},	#{userID},	#{roleID}
+        )
+    </insert>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into user_role_ref ( <include refid="user_role_ref_column_sql" /> )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.userRoleRefID},#{item.userID},#{item.roleID})
+        </foreach>
+    </insert>
+
+    <select id="findUserroleRef" parameterType="com.mai.user.entity.UserroleRef"
+            resultType="com.mai.user.entity.UserroleRef">
+        select <include refid="user_role_ref_column_sql"></include>
+          from user_role_ref
+        <where>
+            1=1
+            <if test="userID!=null and userID !=''">
+                and userID = #{userID}
+            </if>
+            <if test="roleID!=null and roleID !=''">
+                and roleID = #{roleID}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteUserroleRefByUID" parameterType="java.lang.String">
+        delete from user_role_ref where userID = #{userID}
+    </delete>
+    
+     <select id="getRefByUidAndRoleID" parameterType="map"
+            resultType="com.mai.user.entity.UserroleRef">
+        select * from user_role_ref where userID = #{userID} and roleID = #{roleID}
+    </select>
+    
+     <delete id="deleteRefByID" parameterType="java.lang.String">
+        delete from user_role_ref where userRoleRefID = #{id}
+    </delete>
+    
+</mapper>

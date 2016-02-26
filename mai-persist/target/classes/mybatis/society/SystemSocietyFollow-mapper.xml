@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.SystemSocietyFollow">
+    <sql id="systemSocietyFollow_column_sql">
+        systemSocietyFollowID,societyID,societyFollowNum,personID,createTime
+    </sql>
+    <insert id="insert" parameterType="com.mai.society.entity.SystemSocietyFollow">
+        insert into systemsocietyfollow(
+        <include refid="systemSocietyFollow_column_sql"></include>
+        )
+        VALUES(
+        #{systemSocietyFollowID},#{societyID},#{societyFollowNum},#{personID},#{createTime}
+        )
+    </insert>
+
+    <select id="findSystemSocietyFollowBySID" parameterType="java.lang.String"
+            resultType="com.mai.society.entity.SystemSocietyFollow">
+        select * from systemsocietyfollow where societyID = #{sid}
+    </select>
+    <update id="updateSystemSocietyFollow" parameterType="com.mai.society.entity.SystemSocietyFollow">
+        update systemsocietyfollow
+        <set>
+            societyID = #{societyID},
+            societyFollowNum = #{societyFollowNum},
+            personID = #{personID},
+            createTime = #{createTime}
+        </set>
+        <where>
+            systemSocietyFollowID = #{systemSocietyFollowID}
+        </where>
+    </update>
+</mapper>
